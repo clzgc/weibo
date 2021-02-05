@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\user;
+use Auth;
 
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'name'=>'required|unique:users|max:50',
+            'name'=>'required|max:50',
             'email'=>'required|email|unique:users|max:255',
             'password'=>'required|confirmed|min:6'
         ]);
@@ -32,6 +33,7 @@ class UsersController extends Controller
            'password'=>bcrypt($request->password),
         ]);
 
+        Auth::login($user);
         session()->flash('success','欢迎，您将在这里开启一段新的旅程');
         return redirect()->route('users.show',[$user]);
     }
